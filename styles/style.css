@@ -1,0 +1,50 @@
+:root {
+    --background-color1:rgb(245, 215, 145);
+    --background-color2:rgb(225, 200, 115);
+    --background-color3: rgb(200, 160, 0);
+    --background-color4:rgb(90, 120, 230);
+    --background-color5:rgb(30, 60, 200);
+    -background-color6:rgb(0, 0, 140);
+    --error-color: rgb(205, 30, 30);
+  }
+  
+body {
+    margin: 0;
+    font-family: 'Open-Sans', sans-serif;
+    color: rgb(5, 5, 100);
+    background-color: var(--background-color4);
+}
+
+#main-header {
+    background-color: var(--background-color5);
+    color:white;
+     padding: 2rem 5%;
+     text-align: center;
+}
+
+.btn {
+    font: inherit;
+    padding: 1rem;
+    background-color:  var(--background-color5);
+    border: 1px solid  var(--background-color5);
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-alt {
+    background-color: transparent;
+    border-color: transparent;
+    color:  var(--background-color5);
+}
+
+.btn:hover {
+    background-color: rgb(20, 20, 140);
+    border-color: rgb(20, 20, 140);;
+    color: white;
+}
+
+.btn-alt:hover {
+    background-color: var(--background-color4);
+    border-color: transparent;
+}
