@@ -1,7 +1,7 @@
-function resetGame () {
+function resetGame() {
     activePlayer = 0;
     currentRound = 1;
-    gameIsOver =false;
+    gameIsOver = false;
     gameOverElement.firstElementChild.innerHTML = 
     'You won, <span id="winner-name">PLAYER NAME</span>! Congratulations!!';
     gameOverElement.style.display = "none";
@@ -9,19 +9,35 @@ function resetGame () {
     let gameBoardIndex = 0;
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
-            gameData [i][j] = 0;
+            gameData[i][j] = 0;
             const gameBoardItemElement = gameBoardElement.children[gameBoardIndex];
             gameBoardItemElement.textContent ="";
-            gameBoardItemElement.classList.remove ("disabled");
+            gameBoardItemElement.classList.remove("disabled");
             gameBoardIndex++;
-        }
+        } 
     }
 }
 
-function startNewGame () {
-    if (players[0].name === "" || players[1].name === "") { // if either two players do NOT have a name
-        alert("Please make sure to add player names") // this message will show if player names have not been entered
-        return; //when this is executed code after is NOT executed
+function startOnePlayerNewGame() {
+    if (players[0].name === "") { 
+        alert("Please make sure to add player name"); 
+        return; 
+    }
+
+    //Set symbol and name for computer
+    players[1].name = "Computer"; 
+    players[1].symbol = "O";
+
+    resetGame();
+
+    activePlayerNameElement.textContent = players[activePlayer].name;
+    gameAreaElement.style.display = "block";
+}
+
+function startTwoPlayerNewGame() {
+    if (players[0].name === "" || players[1].name === "") { 
+        alert("Please make sure to add player names"); 
+        return; 
     }
 
     resetGame();
@@ -30,16 +46,12 @@ function startNewGame () {
     gameAreaElement.style.display = "block";
 }
 
-function switchPlayer () {
-    if (activePlayer === 0) {
-        activePlayer = 1;
-    } else {
-        activePlayer = 0;
-    }
+function switchPlayer() {
+    activePlayer = (activePlayer === 0) ? 1: 0;
     activePlayerNameElement.textContent = players[activePlayer].name;
 }
 
-function selectGameField (event) { // this is done to keep track of which field the player is clicking on so that we can make sure they are not clicking on the same field and see who wins
+function selectGameField (event) { 
     if (event.target.tagName !=="LI" || gameIsOver) {
     return;
 }
@@ -48,7 +60,7 @@ function selectGameField (event) { // this is done to keep track of which field 
     const selectedColumn = selectedField.dataset.col - 1;
     const selectedRow = selectedField.dataset.row - 1;
 
-    if (gameData[selectedRow][selectedColumn]> 0) {
+    if (gameData[selectedRow][selectedColumn] > 0) {
         alert ("Please click on an empty field!");
         return;
     }
@@ -62,14 +74,54 @@ function selectGameField (event) { // this is done to keep track of which field 
 
     if (winnerId !== 0) {
         endGame(winnerId);
+        return;
     }
 
-    currentRound ++;
+    currentRound++;
     switchPlayer();
+
+    if(players[activePlayer].name ==="Computer" && !gameIsOver){
+        computerMove(); // computer will make a move when it is the computer's turn
+    }
 }
 
-function checkForGameOver () {
-   // this for loop checks if the rows are equal (aka if selected by the same player they win)
+function computerMove() {
+     let emptyFields = [];
+     for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (gameData[i][j] === 0) {
+                emptyFields.push({
+                    row: i,
+                    col: j
+                });
+            }
+        } 
+    }
+
+    if (emptyFields.length === 0) return;
+
+    //add a delay for computer moves
+    setTimeout(() => {
+    const computerRandomMove = emptyFields[Math.floor(Math.random() * emptyFields.length)];
+    const selectedField = gameBoardElement.querySelector(`li[data-row="${computerRandomMove.row + 1}"][data-col="${computerRandomMove.col + 1}"]`);
+    selectedField.textContent = players[activePlayer].symbol;
+    selectedField.classList.add("disabled");
+
+    gameData[computerRandomMove.row][computerRandomMove.col] = activePlayer + 1;
+    
+    const winnerId = checkForGameOver();
+
+    if (winnerId !== 0) {
+        endGame(winnerId);
+        return;
+    }
+
+    currentRound++;
+    switchPlayer();
+}, 400)};
+
+function checkForGameOver() {
+   // Check rows
     for (let i = 0; i < 3; i++) {
         if (
             gameData [i][0] > 0 && 
@@ -79,8 +131,8 @@ function checkForGameOver () {
             return gameData [i][0];
         }
     }
-    // this for loop checks if the columns are equal (aka if selected by the same player they win)
-    for (let i = 0; i < 3; i++) {
+    // Check columns
+    for (let i = 0; i < 3; i++) {0
         if (
             gameData [0][i] > 0 && 
             gameData [0][i] === gameData [1][i] && 
@@ -89,7 +141,7 @@ function checkForGameOver () {
             return gameData [0][i];
         }
     }
-
+    //Check diagonals
     if (
         gameData [0][0] > 0 && 
         gameData [0][0] === gameData [1][1] && 
@@ -105,7 +157,8 @@ function checkForGameOver () {
         ) {
         return gameData [2][0];
     }
-    if (currentRound ===9) {
+    //Check for draw
+    if (currentRound === 9) {
         return -1;
     }
     return 0;
@@ -122,5 +175,4 @@ function endGame(winnerId) {
     } else {
         gameOverElement.firstElementChild.textContent = "It's a draw!!";
     } 
-
 }

@@ -36,7 +36,7 @@
 #game-configuration {
     width: 90%;
     max-width: 40rem;
-    margin: 3rem auto;
+    margin: 0 auto;
     text-align: center;
 }
 
@@ -45,6 +45,7 @@
     margin: 0;
     padding: 0;
     display: flex;
+    justify-content: center;
 }
 
 #game-configuration li {

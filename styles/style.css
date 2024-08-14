@@ -1,10 +1,10 @@
 :root {
-    --background-color1:rgb(245, 215, 145);
-    --background-color2:rgb(225, 200, 115);
-    --background-color3: rgb(200, 160, 0);
+    --background-color1:rgb(255, 220, 140);
+    --background-color2:rgb(255, 200, 60);
+    --background-color3: rgb(220, 170, 10);
     --background-color4:rgb(90, 120, 230);
     --background-color5:rgb(30, 60, 200);
-    -background-color6:rgb(0, 0, 140);
+    --background-color6:rgb(0, 0, 140);
     --error-color: rgb(205, 30, 30);
   }
   
@@ -20,6 +20,32 @@ body {
     color:white;
      padding: 2rem 5%;
      text-align: center;
+}
+
+#starter-screen {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    color: white;
+}
+
+#starter-screen button {
+    margin: 1rem auto;
+    width: 8rem;
+    background-color: var(--background-color5);
+    border-radius: 4px;
+    padding: .5rem;
+    color: white;
+    text-decoration: none;
+}
+
+#starter-screen button:hover {
+    background-color: var(--background-color6);
+}
+
+ #two-players, #one-player {
+    display: none;
 }
 
 .btn {
