@@ -24,7 +24,7 @@ function startOnePlayerNewGame() {
         return;
     }
 
-    //Set symbol and name for computer
+    // Set symbol and name for computer
     players[1].name = "Computer";
     players[1].symbol = "O";
 
@@ -80,47 +80,54 @@ function selectGameField(event) {
     currentRound++;
     switchPlayer();
 
+    //Trigger computer move if the active player is the computer
     if (players[activePlayer].name === "Computer" && !gameIsOver) {
-        computerMove(); // computer will make a move when it is the computer's turn
+        computerMove(); // Computer will make a move when it is the computer's turn
     }
 }
 
+
 function computerMove() {
-    //Check if computer can block player 1 from winning
-    function blockMove() {
+    // Function to find a computer move to block or win
+    function findMove(symbol) {
+        // Check rows
         for (let i = 0; i < 3; i++) {
-            if (gameData[i][0] === 1 && gameData[i][1] === 1 && gameData[i][2] === 0) return { row: i, col: 2 };
-            if (gameData[i][0] === 1 && gameData[i][2] === 1 && gameData[i][1] === 0) return { row: i, col: 1 };
-            if (gameData[i][1] === 1 && gameData[i][2] === 1 && gameData[i][0] === 0) return { row: i, col: 0 };
+            if (gameData[i][0] === symbol && gameData[i][1] === symbol && gameData[i][2] === 0) return { row: i, col: 2 };
+            if (gameData[i][0] === symbol && gameData[i][2] === symbol && gameData[i][1] === 0) return { row: i, col: 1 };
+            if (gameData[i][1] === symbol && gameData[i][2] === symbol && gameData[i][0] === 0) return { row: i, col: 0 };
         }
 
         // Check columns
         for (let i = 0; i < 3; i++) {
-            if (gameData[0][i] === 1 && gameData[1][i] === 1 && gameData[2][i] === 0) return { row: 2, col: i };
-            if (gameData[0][i] === 1 && gameData[2][i] === 1 && gameData[1][i] === 0) return { row: 1, col: i };
-            if (gameData[1][i] === 1 && gameData[2][i] === 1 && gameData[0][i] === 0) return { row: 0, col: i };
+            if (gameData[0][i] === symbol && gameData[1][i] === symbol && gameData[2][i] === 0) return { row: 2, col: i };
+            if (gameData[0][i] === symbol && gameData[2][i] === symbol && gameData[1][i] === 0) return { row: 1, col: i };
+            if (gameData[1][i] === symbol && gameData[2][i] === symbol && gameData[0][i] === 0) return { row: 0, col: i };
         }
 
         //Check diagonals
-        if (gameData[0][0] === 1 && gameData[1][1] === 1 && gameData[2][2] === 0) return { row: 2, col: 2 };
-        if (gameData[0][0] === 1 && gameData[2][2] === 1 && gameData[1][1] === 0) return { row: 1, col: 1 };
-        if (gameData[1][1] === 1 && gameData[2][2] === 1 && gameData[0][0] === 0) return { row: 0, col: 0 };
-        if (gameData[2][0] === 1 && gameData[1][1] === 1 && gameData[0][2] === 0) return { row: 0, col: 2 };
-        if (gameData[2][0] === 1 && gameData[0][2] === 1 && gameData[1][1] === 0) return { row: 1, col: 1 };
-        if (gameData[1][1] === 1 && gameData[0][2] === 1 && gameData[2][0] === 0) return { row: 2, col: 0 };
+        if (gameData[0][0] === symbol && gameData[1][1] === symbol && gameData[2][2] === 0) return { row: 2, col: 2 };
+        if (gameData[0][0] === symbol && gameData[2][2] === symbol && gameData[1][1] === 0) return { row: 1, col: 1 };
+        if (gameData[1][1] === symbol && gameData[2][2] === symbol && gameData[0][0] === 0) return { row: 0, col: 0 };
+        if (gameData[2][0] === symbol && gameData[1][1] === symbol && gameData[0][2] === 0) return { row: 0, col: 2 };
+        if (gameData[2][0] === symbol && gameData[0][2] === symbol && gameData[1][1] === 0) return { row: 1, col: 1 };
+        if (gameData[1][1] === symbol && gameData[0][2] === symbol && gameData[2][0] === 0) return { row: 2, col: 0 };
 
-        return null; //no blocking move found
+        return null; // No blocking or winning move found
     }
 
-    const blockingMove = blockMove();
+    const winningMove = findMove(2); // Check if Computer can win
+    const blockingMove = findMove(1); // Check if Computer can block Player 1's move
 
-    if (blockingMove) {
+    const move = winningMove || blockingMove;
+
+    if (move) {
+        // Add a delay for computer moves
         setTimeout(() => {
-            const selectedField = gameBoardElement.querySelector(`li[data-row="${blockingMove.row + 1}"][data-col="${blockingMove.col + 1}"]`);
+            const selectedField = gameBoardElement.querySelector(`li[data-row="${move.row + 1}"][data-col="${move.col + 1}"]`);
             selectedField.textContent = players[activePlayer].symbol;
             selectedField.classList.add("disabled");
 
-            gameData[blockingMove.row][blockingMove.col] = activePlayer + 1;
+            gameData[move.row][move.col] = activePlayer + 1;
             const winnerId = checkForGameOver();
             if (winnerId !== 0) {
                 endGame(winnerId);
@@ -145,7 +152,6 @@ function computerMove() {
 
         if (emptyFields.length === 0) return;
 
-        //add a delay for computer moves
         setTimeout(() => {
             const computerRandomMove = emptyFields[Math.floor(Math.random() * emptyFields.length)];
             const selectedField = gameBoardElement.querySelector(`li[data-row="${computerRandomMove.row + 1}"][data-col="${computerRandomMove.col + 1}"]`);
